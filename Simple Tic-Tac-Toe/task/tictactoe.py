@@ -1,33 +1,62 @@
 def check_result(lst):
     sum_of_elem = [sum(i) for i in lst]
     empty_in_lst = list(filter(lambda x: 0 in x, lst))
-    if sum(sum_of_elem[:3]) not in range(-1, 2) or 3 in sum_of_elem and -3 in sum_of_elem:
-        print("Impossible")
-        exit()
-    elif 3 in sum_of_elem:
+    if 3 in sum_of_elem:
         print("X wins")
+        return False
     elif -3 in sum_of_elem:
         print("O wins")
-    elif any(empty_in_lst):
-        print("Game not finished")
-    else:
+        return False
+    elif not any(empty_in_lst):
         print("Draw")
+        return False
+    return True
 
 
-inp = input("Enter cells:")
-grid = [[i for i in inp[:3]], [i for i in inp[3:6]], [i for i in inp[6:]]]
-grid_for_check = grid + \
-                 [[grid[j][i] for j in range(3)] for i in range(3)] +\
-                 [[grid[0][0], grid[1][1], grid[2][2]]] + \
-                 [[grid[0][2], grid[1][1], grid[2][0]]]
+def check_possibility(user_inp, lst):
+    for i in user_inp:
+        if not i.isdigit():
+            print("You should enter numbers!")
+            return False
+        if i not in ("1", "2", "3"):
+            print("Coordinates should be from 1 to 3! ")
+            return False
+    if lst[int(user_inp[0]) - 1][int(user_inp[1]) - 1] != "_":
+        print("This cell is occupied! Choose another one!")
+        print(lst[int(user_inp[0]) - 1][int(user_inp[1]) - 1])
+        return False
+    return True
 
-grid_exchange = [[1 if i == "X" else -1 if i == "O" else 0 for i in j] for j in grid_for_check]
+
+def make_grid(string):
+    return [[i for i in string[:3]], [i for i in string[3:6]], [i for i in string[6:]]]
 
 
-for i, j in enumerate(grid):
-    grid[i] = ["|"] + j + ["|"]
-print("---------")
-for i in grid:
-    print(*i)
-print("---------")
-check_result(grid_exchange)
+def convert_grid(lst):
+    lst_for_check = lst + \
+                     [[lst[j][i] for j in range(3)] for i in range(3)] + \
+                     [[lst[0][0], lst[1][1], lst[2][2]]] + \
+                     [[lst[0][2], lst[1][1], lst[2][0]]]
+
+    return [[1 if i == "X" else -1 if i == "O" else 0 for i in j] for j in lst_for_check]
+
+
+def print_grid(lst):
+    print("---------")
+    for i in lst:
+        print("|", *i, "|")
+    print("---------")
+
+
+inp = "_________"
+grid = make_grid(inp)
+print_grid(grid)
+flag = 1
+while check_result(convert_grid(grid)):
+    user_input = input("Enter the coordinates:").split()
+    while not check_possibility(user_input, grid):
+        user_input = input("Enter the coordinates:").split()
+    grid[int(user_input[0]) - 1][int(user_input[1]) - 1] = ("Z", "X", "O")[flag]
+    flag *= -1
+    print_grid(grid)
+
