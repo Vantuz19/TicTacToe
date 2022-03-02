@@ -14,6 +14,9 @@ def check_result(lst):
 
 
 def check_possibility(user_inp, lst):
+    if len(user_inp) != 2:
+        print("Enter EXACTLY 2 digits")
+        return False
     for i in user_inp:
         if not i.isdigit():
             print("You should enter numbers!")
@@ -37,7 +40,6 @@ def convert_grid(lst):
                      [[lst[j][i] for j in range(3)] for i in range(3)] + \
                      [[lst[0][0], lst[1][1], lst[2][2]]] + \
                      [[lst[0][2], lst[1][1], lst[2][0]]]
-
     return [[1 if i == "X" else -1 if i == "O" else 0 for i in j] for j in lst_for_check]
 
 
@@ -53,10 +55,9 @@ grid = make_grid(inp)
 print_grid(grid)
 flag = 1
 while check_result(convert_grid(grid)):
-    user_input = input("Enter the coordinates:").split()
+    user_input = input("Enter the coordinates: ").split()
     while not check_possibility(user_input, grid):
-        user_input = input("Enter the coordinates:").split()
+        user_input = input("Enter the coordinates: ").split()
     grid[int(user_input[0]) - 1][int(user_input[1]) - 1] = ("Z", "X", "O")[flag]
     flag *= -1
     print_grid(grid)
-
